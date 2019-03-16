@@ -11,5 +11,10 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     fs,
-    devtools
+    devtools,
+    readr,
+    stringr,
+    purrr,
+    tibble,
+    rlang
 RoxygenNote: 6.1.1
