@@ -1,0 +1,15 @@
+Package: decor
+Title: Code decoration
+Version: 0.0.0.9000
+Authors@R: c(
+      person("Romain", "François", email = "romain@purrple.cat", role = c("aut", "cre"))
+    )
+Description: Package interior decorator.
+Depends: R (>= 3.5.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    fs,
+    devtools
+RoxygenNote: 6.1.1
