@@ -16,5 +16,6 @@ Imports:
     stringr,
     purrr,
     tibble,
-    rlang
+    rlang,
+    utils
 RoxygenNote: 6.1.1

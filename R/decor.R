@@ -34,19 +34,26 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg)) {
   map_dfr(files, function(file){
     lines <- read_lines(file)
 
-    line <- str_which(lines, cpp_attribute_pattern)
-    n <- length(line)
-    text <- lines[line]
-    content <- str_replace(text, cpp_attribute_pattern, "\\1")
+    start <- str_which(lines, cpp_attribute_pattern)
+    if (length(start)) {
+      end <- c(tail(start, -1L) - 1L, length(lines))
 
-    name <- str_replace(content, "\\(.*$", "")
+      n <- length(start)
+      text <- lines[start]
+      content <- str_replace(text, cpp_attribute_pattern, "\\1")
 
-    has_args <- str_detect(content, "\\(")
-    args <- map_if(content, has_args, ~{
-      call_args(parse(text = .x)[[1]])
-    })
+      name <- str_replace(content, "\\(.*$", "")
 
-    tibble(file, line, name, args, content)
+      has_args <- str_detect(content, "\\(")
+      args <- map_if(content, has_args, ~{
+        call_args(parse(text = .x)[[1]])
+      })
+
+      context <- map2(start, end, ~lines[seq2(.x, .y)])
+
+      tibble(file, line = start, name, args, content, context)
+    }
+
   })
 
 }
