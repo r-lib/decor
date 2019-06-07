@@ -42,16 +42,16 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg)) {
       text <- lines[start]
       content <- str_replace(text, cpp_attribute_pattern, "\\1")
 
-      name <- str_replace(content, "\\(.*$", "")
+      decoration <- str_replace(content, "\\(.*$", "")
 
       has_args <- str_detect(content, "\\(")
-      args <- map_if(content, has_args, ~{
+      params <- map_if(content, has_args, ~{
         call_args(parse(text = .x)[[1]])
       })
 
       context <- map2(start, end, ~lines[seq2(.x, .y)])
 
-      tibble(file, line = start, name, args, content, context)
+      tibble(file, line = start, decoration, params, context)
     }
 
   })

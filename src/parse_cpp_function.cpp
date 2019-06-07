@@ -167,7 +167,7 @@ extern "C" SEXP parse_cpp_function(SEXP signature_){
   SET_STRING_ELT(names, 0, Rf_mkChar("name") ) ;
 
   SET_VECTOR_ELT(res, 1, Rf_mkString(return_type.c_str())) ;
-  SET_STRING_ELT(names, 1, Rf_mkChar("type") ) ;
+  SET_STRING_ELT(names, 1, Rf_mkChar("return_type") ) ;
 
   SEXP args_lst = PROTECT(Rf_allocVector(VECSXP, 1));
   SET_VECTOR_ELT(args_lst, 0, parse_arguments(args));
