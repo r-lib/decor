@@ -153,7 +153,7 @@ extern "C" SEXP parse_cpp_function(SEXP signature_){
 
   // find name of the function and return type
   std::string preamble = signature.substr(0, beginParenLoc) ;
-  std::string::size_type sep = preamble.find_last_of( kWhitespaceChars ) ;
+  std::string::size_type sep = preamble.find_last_of(kWhitespaceChars) ;
   std::string name = preamble.substr( sep + 1);
   std::string return_type = preamble.substr( 0, sep) ;
 

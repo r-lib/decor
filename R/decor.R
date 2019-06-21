@@ -62,7 +62,7 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg)) {
 parse_cpp_function <- function(context) {
   context <- str_subset(context, "^[[:space:]]*//", negate = TRUE)
   first_brace <- str_which(context, "[{]")[1L]
-  signature <- str_replace(paste(context[seq2(1L, first_brace)], collapse = ""), "[[:space:]]*[{].*$", "")
+  signature <- str_replace(paste(context[seq2(1L, first_brace)], collapse = " "), "[[:space:]]*[{].*$", "")
 
   .Call(decor_parse_cpp_function, signature)
 }

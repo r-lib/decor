@@ -1,6 +1,6 @@
 Package: decor
 Title: Code decoration
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: c(
       person("Romain", "François", email = "romain@purrple.cat", role = c("aut", "cre"))
     )
