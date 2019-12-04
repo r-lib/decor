@@ -7,7 +7,7 @@
 cpp_decorations(pkg = ".", files = cpp_files(pkg = pkg))
 }
 \arguments{
-\item{pkg}{A package, see [devtools::as.package()]}
+\item{pkg}{A package, see `devtools::as.package()`}
 
 \item{files}{C++ files}
 }

@@ -1,5 +1,4 @@
 #' @useDynLib decor, .registration = TRUE
-#' @import devtools
 #' @import fs
 #' @import rlang
 #' @import stringr
