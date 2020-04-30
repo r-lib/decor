@@ -25,7 +25,7 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg)) {
 
   cpp_attribute_pattern <-  paste0(
     "^[[:blank:]]*",                 ## allow for indentation
-    "//[[:blank:]]*",                ## the comment should be started by //, with potential spaces following
+    #"//[[:blank:]]*",                ## the comment should be started by //, with potential spaces following
     "\\[\\[",                        ## the opening square brackets
     "[[:space:]]*(.*?)[[:space:]]*", ## the material within
     "\\]\\].*$"                      ## closing brackets
