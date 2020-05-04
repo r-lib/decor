@@ -8,7 +8,7 @@ cpp_files <- function(pkg = ".") {
 
   src <- path(pkg$path, "src")
   if (dir_exists(src)) {
-    dir_ls(src, regexp = "[.](cc|cpp)$")
+    dir_ls(src, regexp = "[.](cc|cpp|h|hpp)$")
   } else {
     as_fs_path(chr())
   }
