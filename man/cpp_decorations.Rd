@@ -4,12 +4,14 @@
 \alias{cpp_decorations}
 \title{Decorations in a C++ file}
 \usage{
-cpp_decorations(pkg = ".", files = cpp_files(pkg = pkg))
+cpp_decorations(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE)
 }
 \arguments{
 \item{pkg}{A package, see [devtools::as.package()]}
 
 \item{files}{C++ files}
+
+\item{is_attribute}{set to true if the decorations are C++11 attributes}
 }
 \description{
 Decorations in a C++ file

@@ -4,13 +4,12 @@
 #'
 #' @export
 cpp_files <- function(pkg = ".") {
-  pkg <- as.package(pkg)
 
-  src <- path(pkg$path, "src")
-  if (dir_exists(src)) {
-    dir_ls(src, regexp = "[.](cc|cpp|h|hpp)$")
+  src <- file.path(pkg, "src")
+  if (dir.exists(src)) {
+    list.files(src, full.names = TRUE, pattern = "[.](cc|cpp|h|hpp)$")
   } else {
-    as_fs_path(chr())
+    chr()
   }
 
 }
@@ -19,32 +18,33 @@ cpp_files <- function(pkg = ".") {
 #'
 #' @param pkg A package, see [devtools::as.package()]
 #' @param files C++ files
+#' @param is_attribute set to true if the decorations are C++11 attributes
 #'
 #' @export
-cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg)) {
+cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE) {
 
   cpp_attribute_pattern <-  paste0(
-    "^[[:blank:]]*",                 ## allow for indentation
-    #"//[[:blank:]]*",                ## the comment should be started by //, with potential spaces following
-    "\\[\\[",                        ## the opening square brackets
-    "[[:space:]]*(.*?)[[:space:]]*", ## the material within
-    "\\]\\].*$"                      ## closing brackets
+    "^[[:blank:]]*",                     ## allow for indentation
+    if (!is_attribute) "//[[:blank:]]*", ## the comment should be started by //, with potential spaces following
+    "\\[\\[",                            ## the opening square brackets
+    "[[:space:]]*(.*?)[[:space:]]*",     ## the material within
+    "\\]\\].*$"                          ## closing brackets
   )
 
   map_dfr(files, function(file){
-    lines <- read_lines(file)
+    lines <- readLines(file)
 
-    start <- str_which(lines, cpp_attribute_pattern)
+    start <- grep(cpp_attribute_pattern, lines)
     if (length(start)) {
       end <- c(tail(start, -1L) - 1L, length(lines))
 
       n <- length(start)
       text <- lines[start]
-      content <- str_replace(text, cpp_attribute_pattern, "\\1")
+      content <- sub(cpp_attribute_pattern, "\\1", text)
 
-      decoration <- str_replace(content, "\\(.*$", "")
+      decoration <- sub("\\(.*$", "", content)
 
-      has_args <- str_detect(content, "\\(")
+      has_args <- grepl("\\(", content)
       params <- map_if(content, has_args, ~{
         call_args(parse(text = .x)[[1]])
       })
@@ -60,9 +60,9 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg)) {
 
 
 parse_cpp_function <- function(context) {
-  context <- str_subset(context, "^[[:space:]]*//", negate = TRUE)
-  first_brace <- str_which(context, "[{]")[1L]
-  signature <- str_replace(paste(context[seq2(1L, first_brace)], collapse = " "), "[[:space:]]*[{].*$", "")
+  context <- grep("^[[:space:]]*//", context, value = TRUE, invert = TRUE)
+  first_brace <- grep("[{]", context)[1L]
+  signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq2(1L, first_brace)], collapse = " "))
 
   .Call(decor_parse_cpp_function, signature)
 }
