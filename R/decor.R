@@ -1,12 +1,10 @@
 #' C++ files from a package
 #'
-#' @param pkg See [devtools::as.package()]
+#' @param pkg See `devtools::as.package()`
 #'
 #' @export
 cpp_files <- function(pkg = ".") {
-  pkg <- as.package(pkg)
-
-  src <- path(pkg$path, "src")
+  src <- path(pkg, "src")
   if (dir_exists(src)) {
     dir_ls(src, regexp = "[.](cc|cpp)$")
   } else {
@@ -17,7 +15,7 @@ cpp_files <- function(pkg = ".") {
 
 #' Decorations in a C++ file
 #'
-#' @param pkg A package, see [devtools::as.package()]
+#' @param pkg A package, see `devtools::as.package()`
 #' @param files C++ files
 #'
 #' @export

@@ -7,7 +7,7 @@
 cpp_files(pkg = ".")
 }
 \arguments{
-\item{pkg}{See [devtools::as.package()]}
+\item{pkg}{See `devtools::as.package()`}
 }
 \description{
 C++ files from a package

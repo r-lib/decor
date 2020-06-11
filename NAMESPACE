@@ -2,7 +2,6 @@
 
 export(cpp_decorations)
 export(cpp_files)
-import(devtools)
 import(fs)
 import(readr)
 import(rlang)
