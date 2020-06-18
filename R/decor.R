@@ -33,29 +33,31 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
     "\\]\\].*$"                          ## closing brackets
   )
 
-  map_dfr(files, function(file){
+  map_dfr(files, function(file) {
+    if (!file.exists(file)) {
+      return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
+    }
     lines <- readLines(file)
 
     start <- grep(cpp_attribute_pattern, lines)
-    if (length(start)) {
-      end <- c(tail(start, -1L) - 1L, length(lines))
-
-      n <- length(start)
-      text <- lines[start]
-      content <- sub(cpp_attribute_pattern, "\\1", text)
-
-      decoration <- sub("\\(.*$", "", content)
-
-      has_args <- grepl("\\(", content)
-      params <- map_if(content, has_args, ~{
-        call_args(parse(text = .x)[[1]])
-      })
-
-      context <- map2(start, end, ~lines[seq2(.x, .y)])
-
-      tibble(file, line = start, decoration, params, context)
+    if (!length(start)) {
+      return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
     }
+    end <- c(tail(start, -1L) - 1L, length(lines))
 
+    text <- lines[start]
+    content <- sub(cpp_attribute_pattern, "\\1", text)
+
+    decoration <- sub("\\(.*$", "", content)
+
+    has_args <- grepl("\\(", content)
+    params <- map_if(content, has_args, ~{
+      call_args(parse(text = .x)[[1]])
+    })
+
+    context <- map2(start, end, ~lines[seq2(.x, .y)])
+
+    tibble(file, line = start, decoration, params, context)
   })
 
 }
