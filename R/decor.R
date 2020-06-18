@@ -4,14 +4,16 @@
 #'
 #' @export
 cpp_files <- function(pkg = ".") {
+  if (length(pkg) == 0) {
+    return(character())
+  }
 
   src <- file.path(pkg, "src")
   if (dir.exists(src)) {
-    list.files(src, full.names = TRUE, pattern = "[.](cc|cpp|h|hpp)$")
-  } else {
-    chr()
+    return(list.files(src, full.names = TRUE, pattern = "[.](cc|cpp|h|hpp)$"))
   }
 
+  return(character())
 }
 
 #' Decorations in a C++ file
@@ -61,8 +63,9 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
 
 parse_cpp_function <- function(context) {
   context <- grep("^[[:space:]]*//", context, value = TRUE, invert = TRUE)
-  first_brace <- grep("[{]", context)[1L]
-  signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq2(1L, first_brace)], collapse = " "))
+  first_brace_or_statement <- grep("[{;]", context)[1L]
+  # If not a first brace assume it is just a declaration.
+  signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq2(1L, first_brace_or_statement)], collapse = " "))
 
   .Call(decor_parse_cpp_function, signature)
 }
