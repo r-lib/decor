@@ -4,7 +4,7 @@
 #'
 #' @export
 cpp_files <- function(pkg = ".") {
-  if (length(pkg) == 0) {
+  if (length(pkg) == 0 || !nzchar(pkg)) {
     return(character())
   }
 
@@ -25,28 +25,20 @@ cpp_files <- function(pkg = ".") {
 #' @export
 cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE) {
 
-  cpp_attribute_pattern <-  paste0(
-    "^[[:blank:]]*",                     ## allow for indentation
-    if (!is_attribute) "//[[:blank:]]*", ## the comment should be started by //, with potential spaces following
-    "\\[\\[",                            ## the opening square brackets
-    "[[:space:]]*(.*?)[[:space:]]*",     ## the material within
-    "\\]\\].*$"                          ## closing brackets
-  )
-
   map_dfr(files, function(file) {
     if (!file.exists(file)) {
       return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
     }
     lines <- readLines(file)
 
-    start <- grep(cpp_attribute_pattern, lines)
+    start <- grep(cpp_attribute_pattern(is_attribute), lines)
     if (!length(start)) {
       return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
     }
     end <- c(tail(start, -1L) - 1L, length(lines))
 
     text <- lines[start]
-    content <- sub(cpp_attribute_pattern, "\\1", text)
+    content <- sub(paste0(cpp_attribute_pattern(is_attribute), ".*"), "\\1", text)
 
     decoration <- sub("\\(.*$", "", content)
 
@@ -62,10 +54,44 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
 
 }
 
+cpp_attribute_pattern <- function(is_attribute) {
+  paste0(
+    "^[[:blank:]]*",                     ## allow for indentation
+    if (!is_attribute) "//[[:blank:]]*", ## the comment should be started by //, with potential spaces following
+    "\\[\\[",                            ## the opening square brackets
+    "[[:space:]]*(.*?)[[:space:]]*",     ## the material within
+    "\\]\\]",                            ## closing brackets
+    "[[:space:]]*"                        ## trailing spaces
+  )
+}
 
-parse_cpp_function <- function(context) {
-  context <- grep("^[[:space:]]*//", context, value = TRUE, invert = TRUE)
-  first_brace_or_statement <- grep("[{;]", context)[1L]
+parse_cpp_function <- function(context, is_attribute = FALSE) {
+  if (length(context) == 0 || !nzchar(context)) {
+    return(
+      tibble(
+        name = character(),
+        return_type = character(),
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
+        )
+      )
+    )
+  }
+
+  # Remove the decoration line if it exists
+  context <- grep(paste0(cpp_attribute_pattern(is_attribute), "$"), context, value = TRUE, invert = TRUE)
+
+  if (is_attribute) {
+    # non-comment attributes may also be on the first line, they need to be removed
+    context <- sub(cpp_attribute_pattern(is_attribute), "", context)
+  }
+
+  first_brace_or_statement <- grep("[{;]", context)[[1L]]
+
   # If not a first brace assume it is just a declaration.
   signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq2(1L, first_brace_or_statement)], collapse = " "))
 
