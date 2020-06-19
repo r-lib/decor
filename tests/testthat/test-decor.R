@@ -94,6 +94,19 @@ describe("cpp_decorations", {
     )
   })
 
+  it("works with multiple commented decorations without parameters", {
+    test_cpp_decorations(
+      "// [[pkg::export]]\nvoid foo() { }\n// [[pkg::export]]\nvoid bar() { }",
+      tibble(
+        file = c(NA_character_, NA_character_),
+        line = c(1L, 3L),
+        decoration = c("pkg::export", "pkg::export"),
+        params = list("pkg::export", "pkg::export"),
+        context = list(c("// [[pkg::export]]", "void foo() { }"), c("// [[pkg::export]]", "void bar() { }"))
+      )
+    )
+  })
+
   it("works with single commented decorations with parameters", {
     test_cpp_decorations(
       "// [[pkg::include(Bar)]]\nvoid foo() { }",
@@ -131,6 +144,25 @@ describe("cpp_decorations", {
     )
   })
 
+  it("works with multiple commented decorations with named parameters", {
+    test_cpp_decorations(
+      "// [[pkg::include(foo = 'Bar')]]\nvoid foo() { }\n// [[pkg::include(foo = 'Baz')]]\nvoid bar() { }",
+      tibble(
+        file = c(NA_character_, NA_character_),
+        line = c(1L, 3L),
+        decoration = c("pkg::include", "pkg::include"),
+        params = list(
+          setNames(list("Bar"), "foo"),
+          setNames(list("Baz"), "foo")
+        ),
+        context = list(
+          c("// [[pkg::include(foo = 'Bar')]]", "void foo() { }"),
+          c("// [[pkg::include(foo = 'Baz')]]", "void bar() { }")
+        )
+      )
+    )
+  })
+
   it("ignores non-commented decorations if is_attribute is FALSE", {
     test_cpp_decorations(
       "[[pkg::export]] void foo() { }",
@@ -156,6 +188,25 @@ describe("cpp_decorations", {
       )
     )
 
+  it("works with multiple non-commented decorations with named parameters", {
+    test_cpp_decorations(is_attribute = TRUE,
+      "[[pkg::include(foo = 'Bar')]]\nvoid foo() { }\n[[pkg::include(foo = 'Baz')]]\nvoid bar() { }",
+      tibble(
+        file = c(NA_character_, NA_character_),
+        line = c(1L, 3L),
+        decoration = c("pkg::include", "pkg::include"),
+        params = list(
+          setNames(list("Bar"), "foo"),
+          setNames(list("Baz"), "foo")
+        ),
+        context = list(
+          c("[[pkg::include(foo = 'Bar')]]", "void foo() { }"),
+          c("[[pkg::include(foo = 'Baz')]]", "void bar() { }")
+        )
+      )
+    )
+  })
+
     test_cpp_decorations(is_attribute = TRUE,
       "[[pkg::include(foo = 'Bar')]] void foo() { }",
       tibble(
@@ -167,6 +218,7 @@ describe("cpp_decorations", {
       )
     )
   })
+
 })
 
 describe("parse_cpp_function", {
