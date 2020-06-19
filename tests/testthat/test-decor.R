@@ -169,185 +169,199 @@ describe("cpp_decorations", {
   })
 })
 
-test_that("parse_cpp_function works", {
-  expect_equal(
-    parse_cpp_function(character()),
-    tibble(
-      name = character(),
-      return_type = character(),
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
+describe("parse_cpp_function", {
+  it("returns an 0 row tibble for empty inputs", {
+    expect_equal(
+      parse_cpp_function(character()),
+      tibble(
+        name = character(),
+        return_type = character(),
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
 
-  expect_equal(
-    parse_cpp_function(""),
-    tibble(
-      name = character(),
-      return_type = character(),
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
+    expect_equal(
+      parse_cpp_function(""),
+      tibble(
+        name = character(),
+        return_type = character(),
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
+  })
 
-  expect_equal(
-    parse_cpp_function("void foo() {  }"),
-    tibble(
-      name = "foo",
-      return_type = "void",
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
-        )
-      )
-    )
-  )
+  it("works with zero argument functions without decorations", {
 
-  expect_equal(
-    parse_cpp_function(c("void foo()", "{", "}")),
-    tibble(
-      name = "foo",
-      return_type = "void",
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
+    expect_equal(
+      parse_cpp_function("void foo() {  }"),
+      tibble(
+        name = "foo",
+        return_type = "void",
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
 
-  expect_equal(
-    parse_cpp_function(c("// [[pkg::export]]", "void foo()", "{", "}")),
-    tibble(
-      name = "foo",
-      return_type = "void",
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
+    expect_equal(
+      parse_cpp_function(c("void foo()", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "void",
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
+  })
 
-  expect_equal(
-    parse_cpp_function(c("[[pkg::export]]", "void foo()", "{", "}"), is_attribute = TRUE),
-    tibble(
-      name = "foo",
-      return_type = "void",
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
+  it("works with zero argument functions with commented decorations", {
+    expect_equal(
+      parse_cpp_function(c("// [[pkg::export]]", "void foo()", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "void",
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
+  })
 
-  expect_equal(
-    parse_cpp_function(c("[[pkg::export]] void foo() {  }"), is_attribute = TRUE),
-    tibble(
-      name = "foo",
-      return_type = "void",
-      args = list(
-        tibble(
-          type = character(),
-          name = character(),
-          default = character()
+  it("works with zero argument functions with non-commented decorations", {
+    expect_equal(
+      parse_cpp_function(c("[[pkg::export]]", "void foo()", "{", "}"), is_attribute = TRUE),
+      tibble(
+        name = "foo",
+        return_type = "void",
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
 
-  expect_equal(
-    parse_cpp_function(c("double foo(int bar)", "{", "}")),
-    tibble(
-      name = "foo",
-      return_type = "double",
-      args = list(
-        tibble(
-          type = "int",
-          name = "bar",
-          default = NA_character_
+    expect_equal(
+      parse_cpp_function(c("[[pkg::export]] void foo() {  }"), is_attribute = TRUE),
+      tibble(
+        name = "foo",
+        return_type = "void",
+        args = list(
+          tibble(
+            type = character(),
+            name = character(),
+            default = character()
+          )
         )
       )
     )
-  )
+  })
 
-  expect_equal(
-    parse_cpp_function(c("double foo(int bar)", "{", "}")),
-    tibble(
-      name = "foo",
-      return_type = "double",
-      args = list(
-        tibble(
-          type = "int",
-          name = "bar",
-          default = NA_character_
+  it("works with functions taking arguments", {
+    expect_equal(
+      parse_cpp_function(c("double foo(int bar)", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "double",
+        args = list(
+          tibble(
+            type = "int",
+            name = "bar",
+            default = NA_character_
+          )
         )
       )
     )
-  )
 
-  expect_equal(
-    parse_cpp_function(c("double foo(int bar, const char* baz)", "{", "}")),
-    tibble(
-      name = "foo",
-      return_type = "double",
-      args = list(
-        tibble(
-          type = c("int", "const char*"),
-          name = c("bar", "baz"),
-          default = c(NA_character_, NA_character_)
+    expect_equal(
+      parse_cpp_function(c("double foo(int bar)", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "double",
+        args = list(
+          tibble(
+            type = "int",
+            name = "bar",
+            default = NA_character_
+          )
         )
       )
     )
-  )
 
-  expect_equal(
-    parse_cpp_function(c("double foo(int bar = 1, const char* baz = \"hi\")", "{", "}")),
-    tibble(
-      name = "foo",
-      return_type = "double",
-      args = list(
-        tibble(
-          type = c("int", "const char*"),
-          name = c("bar", "baz"),
-          default = c("1", '"hi"')
+    expect_equal(
+      parse_cpp_function(c("double foo(int bar, const char* baz)", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "double",
+        args = list(
+          tibble(
+            type = c("int", "const char*"),
+            name = c("bar", "baz"),
+            default = c(NA_character_, NA_character_)
+          )
         )
       )
     )
-  )
+  })
 
-  # Works with declarations
-  expect_equal(
-    parse_cpp_function(c("double foo(int bar = 1, const char* baz = \"hi\");")),
-    tibble(
-      name = "foo",
-      return_type = "double",
-      args = list(
-        tibble(
-          type = c("int", "const char*"),
-          name = c("bar", "baz"),
-          default = c("1", '"hi"')
+  it("works with functions with default arguments", {
+    expect_equal(
+      parse_cpp_function(c("double foo(int bar = 1, const char* baz = \"hi\")", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "double",
+        args = list(
+          tibble(
+            type = c("int", "const char*"),
+            name = c("bar", "baz"),
+            default = c("1", '"hi"')
+          )
         )
       )
     )
-  )
+  })
+
+  it("works with declarations", {
+    expect_equal(
+      parse_cpp_function(c("double foo(int bar = 1, const char* baz = \"hi\");")),
+      tibble(
+        name = "foo",
+        return_type = "double",
+        args = list(
+          tibble(
+            type = c("int", "const char*"),
+            name = c("bar", "baz"),
+            default = c("1", '"hi"')
+          )
+        )
+      )
+    )
+  })
 })
