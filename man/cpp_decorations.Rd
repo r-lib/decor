@@ -7,11 +7,19 @@
 cpp_decorations(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE)
 }
 \arguments{
-\item{pkg}{A package, see [devtools::as.package()]}
+\item{pkg}{The path to a package's root directory.}
 
-\item{files}{C++ files}
+\item{files}{Paths to C++ files. If given, `pkg` will not be used.}
 
-\item{is_attribute}{set to true if the decorations are C++11 attributes}
+\item{is_attribute}{If `TRUE` the decorations are C++11 attributes, if `FALSE` they are comments.}
+}
+\value{
+A tibble with the decorations found, containing fields:
+- file - The filename for the decoration
+- line - The line the decoration was found
+- decoration - The name of the decoration
+- params - Any parameters given with the decoration
+- context - The text of the decoration line and all lines until the next decoration (or the end of the file).
 }
 \description{
 Decorations in a C++ file

@@ -1,7 +1,8 @@
 #' C++ files from a package
 #'
-#' @param pkg See [devtools::as.package()]
+#' @param pkg The path to a package's root directory.
 #'
+#' @return A character vector of C++ files found in the package.
 #' @export
 cpp_files <- function(pkg = ".") {
   if (length(pkg) == 0 || !nzchar(pkg[[1L]])) {
@@ -18,10 +19,15 @@ cpp_files <- function(pkg = ".") {
 
 #' Decorations in a C++ file
 #'
-#' @param pkg A package, see [devtools::as.package()]
-#' @param files C++ files
-#' @param is_attribute set to true if the decorations are C++11 attributes
-#'
+#' @inheritParams cpp_files
+#' @param files Paths to C++ files. If given, `pkg` will not be used.
+#' @param is_attribute If `TRUE` the decorations are C++11 attributes, if `FALSE` they are comments.
+#' @return A tibble with the decorations found, containing fields:
+#' - file - The filename for the decoration
+#' - line - The line the decoration was found
+#' - decoration - The name of the decoration
+#' - params - Any parameters given with the decoration
+#' - context - The text of the decoration line and all lines until the next decoration (or the end of the file).
 #' @export
 cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE) {
 
