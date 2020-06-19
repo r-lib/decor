@@ -27,13 +27,13 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
 
   res <- lapply(files, function(file) {
     if (!file.exists(file)) {
-      return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
+      return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = list()))
     }
     lines <- readLines(file)
 
     start <- grep(cpp_attribute_pattern(is_attribute), lines)
     if (!length(start)) {
-      return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
+      return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = list()))
     }
     end <- c(tail(start, -1L) - 1L, length(lines))
 

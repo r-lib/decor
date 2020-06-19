@@ -54,7 +54,7 @@ describe("cpp_decorations", {
         line = integer(),
         decoration = character(),
         params = list(),
-        context = character()
+        context = list()
       )
     )
 
@@ -65,7 +65,7 @@ describe("cpp_decorations", {
         line = integer(),
         decoration = character(),
         params = list(),
-        context = character()
+        context = list()
       )
     )
   })
@@ -197,7 +197,7 @@ describe("cpp_decorations", {
         line = integer(),
         decoration = character(),
         params = list(),
-        context = character()
+        context = list()
       )
     )
   })
