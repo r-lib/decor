@@ -1,8 +1,8 @@
 Package: decor
-Title: Code decoration
+Title: Code Decoration
 Version: 0.0.0.9001
 Authors@R: c(
-      person("Romain", "François", email = "romain@purrple.cat", role = c("aut"))
+      person("Romain", "François", email = "romain@purrple.cat", role = c("aut")),
       person("Jim", "Hester", email = "jim.hester@rstudio.com", role = c("aut", "cre"))
     )
 Description: Package interior decorator.
@@ -11,11 +11,12 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    dplyr,
     purrr,
     tibble,
     rlang,
     utils
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.0.9000
 Suggests: 
     testthat,
     covr

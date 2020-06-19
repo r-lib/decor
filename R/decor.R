@@ -4,7 +4,7 @@
 #'
 #' @export
 cpp_files <- function(pkg = ".") {
-  if (length(pkg) == 0 || !nzchar(pkg)) {
+  if (length(pkg) == 0 || !nzchar(pkg[[1L]])) {
     return(character())
   }
 
@@ -66,7 +66,7 @@ cpp_attribute_pattern <- function(is_attribute) {
 }
 
 parse_cpp_function <- function(context, is_attribute = FALSE) {
-  if (length(context) == 0 || !nzchar(context)) {
+  if (length(context) == 0 || !nzchar(context[[1L]])) {
     return(
       tibble(
         name = character(),
