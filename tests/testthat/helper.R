@@ -3,7 +3,7 @@ test_cpp_decorations <- function(content, results, is_attribute = FALSE) {
   on.exit(unlink(f))
   writeLines(content, f)
 
-  res <- cpp_decorations(files = f)
+  res <- cpp_decorations(files = f, is_attribute = is_attribute)
   if (NROW(res) > 0) {
     res$file <- NA_character_
   }
