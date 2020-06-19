@@ -45,106 +45,128 @@ describe("cpp_files", {
   })
 })
 
-test_that("cpp_decorations_work", {
-  test_cpp_decorations(
-    "",
-    tibble(
-      file = NA_character_,
-      line = integer(),
-      decoration = character(),
-      params = list(),
-      context = character()
+describe("cpp_decorations", {
+  it("returns an 0 row tibble on empty inputs", {
+    expect_equal(
+      cpp_decorations(files = tempfile()),
+      tibble(
+        file = NA_character_,
+        line = integer(),
+        decoration = character(),
+        params = list(),
+        context = character()
+      )
     )
-  )
 
-  test_cpp_decorations(
-    "// [[pkg::export]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::export",
-      params = list("pkg::export"),
-      context = list("// [[pkg::export]] void foo() { }")
+    test_cpp_decorations(
+      "",
+      tibble(
+        file = NA_character_,
+        line = integer(),
+        decoration = character(),
+        params = list(),
+        context = character()
+      )
     )
-  )
+  })
 
-  test_cpp_decorations(
-    "// [[pkg::export]]\nvoid foo()\n{\n}",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::export",
-      params = list("pkg::export"),
-      context = list(c("// [[pkg::export]]", "void foo()", "{", "}"))
+  it("works with single commented decorations without parameters", {
+    test_cpp_decorations(
+      "// [[pkg::export]]\nvoid foo() { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::export",
+        params = list("pkg::export"),
+        context = list(c("// [[pkg::export]]", "void foo() { }"))
+      )
     )
-  )
 
-  test_cpp_decorations(
-    "// [[pkg::include(Bar)]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::include",
-      params = list(setNames(list(as.symbol("Bar")), "")),
-      context = list("// [[pkg::include(Bar)]] void foo() { }")
+    test_cpp_decorations(
+      "// [[pkg::export]]\nvoid foo()\n{\n}",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::export",
+        params = list("pkg::export"),
+        context = list(c("// [[pkg::export]]", "void foo()", "{", "}"))
+      )
     )
-  )
+  })
 
-  test_cpp_decorations(
-    "// [[pkg::include('Bar')]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::include",
-      params = list(setNames(list("Bar"), "")),
-      context = list("// [[pkg::include('Bar')]] void foo() { }")
+  it("works with single commented decorations with parameters", {
+    test_cpp_decorations(
+      "// [[pkg::include(Bar)]]\nvoid foo() { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::include",
+        params = list(setNames(list(as.symbol("Bar")), "")),
+        context = list(c("// [[pkg::include(Bar)]]", "void foo() { }"))
+      )
     )
-  )
 
-  test_cpp_decorations(
-    "// [[pkg::include(foo = 'Bar')]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::include",
-      params = list(setNames(list("Bar"), "foo")),
-      context = list("// [[pkg::include(foo = 'Bar')]] void foo() { }")
+    test_cpp_decorations(
+      "// [[pkg::include('Bar')]]\nvoid foo() { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::include",
+        params = list(setNames(list("Bar"), "")),
+        context = list(c("// [[pkg::include('Bar')]]", "void foo() { }"))
+      )
     )
-  )
+  })
 
-  # If is_attribute == FALSE don't detect attributes
-  test_cpp_decorations(
-    "[[pkg::export]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = integer(),
-      decoration = character(),
-      params = list(),
-      context = character()
+  it("works with single commented decorations with named parameters", {
+    test_cpp_decorations(
+      "// [[pkg::include(foo = 'Bar')]]\nvoid foo() { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::include",
+        params = list(setNames(list("Bar"), "foo")),
+        context = list(c("// [[pkg::include(foo = 'Bar')]]", "void foo() { }"))
+      )
     )
-  )
+  })
 
-  test_cpp_decorations(is_attribute = TRUE,
-    "[[pkg::export]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::export",
-      params = list("pkg::export"),
-      context = list("[[pkg::export]] void foo() { }")
+  it("ignores non-commented decorations if is_attribute is FALSE", {
+    test_cpp_decorations(
+      "[[pkg::export]] void foo() { }",
+      tibble(
+        file = NA_character_,
+        line = integer(),
+        decoration = character(),
+        params = list(),
+        context = character()
+      )
     )
-  )
+  })
 
-  test_cpp_decorations(is_attribute = TRUE,
-    "[[pkg::include(foo = 'Bar')]] void foo() { }",
-    tibble(
-      file = NA_character_,
-      line = 1L,
-      decoration = "pkg::include",
-      params = list(setNames(list("Bar"), "foo")),
-      context = list("[[pkg::include(foo = 'Bar')]] void foo() { }")
+  it("works with non-commented decorations", {
+    test_cpp_decorations(is_attribute = TRUE,
+      "[[pkg::export]] void foo() { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::export",
+        params = list("pkg::export"),
+        context = list("[[pkg::export]] void foo() { }")
+      )
     )
-  )
+
+    test_cpp_decorations(is_attribute = TRUE,
+      "[[pkg::include(foo = 'Bar')]] void foo() { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::include",
+        params = list(setNames(list("Bar"), "foo")),
+        context = list("[[pkg::include(foo = 'Bar')]] void foo() { }")
+      )
+    )
+  })
 })
 
 test_that("parse_cpp_function works", {
