@@ -11,10 +11,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
-    dplyr,
-    purrr,
     tibble,
-    rlang,
+    vctrs,
     utils
 RoxygenNote: 7.1.0.9000
 Suggests: 

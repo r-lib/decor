@@ -25,7 +25,7 @@ cpp_files <- function(pkg = ".") {
 #' @export
 cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE) {
 
-  map_dfr(files, function(file) {
+  res <- lapply(files, function(file) {
     if (!file.exists(file)) {
       return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = character()))
     }
@@ -43,15 +43,16 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
     decoration <- sub("\\(.*$", "", content)
 
     has_args <- grepl("\\(", content)
-    params <- map_if(content, has_args, ~{
-      call_args(parse(text = .x)[[1]])
+    params <- map_if(content, has_args, function(.x) {
+      set_names(as.list(parse(text = .x)[[1]][-1]))
     })
 
-    context <- map2(start, end, ~lines[seq2(.x, .y)])
+    context <- mapply(function(.x, .y) lines[seq(.x, .y)], start, end, SIMPLIFY = FALSE)
 
     tibble(file, line = start, decoration, params, context)
   })
 
+  vctrs::vec_rbind(!!!res);
 }
 
 cpp_attribute_pattern <- function(is_attribute) {
@@ -93,7 +94,7 @@ parse_cpp_function <- function(context, is_attribute = FALSE) {
   first_brace_or_statement <- grep("[{;]", context)[[1L]]
 
   # If not a first brace assume it is just a declaration.
-  signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq2(1L, first_brace_or_statement)], collapse = " "))
+  signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq(1L, first_brace_or_statement)], collapse = " "))
 
   .Call(decor_parse_cpp_function, signature)
 }
