@@ -2,7 +2,8 @@ Package: decor
 Title: Code decoration
 Version: 0.0.0.9001
 Authors@R: c(
-      person("Romain", "François", email = "romain@purrple.cat", role = c("aut", "cre"))
+      person("Romain", "François", email = "romain@purrple.cat", role = c("aut"))
+      person("Jim", "Hester", email = "jim.hester@rstudio.com", role = c("aut", "cre"))
     )
 Description: Package interior decorator.
 Depends: R (>= 3.3.0)
@@ -16,4 +17,5 @@ Imports:
     utils
 RoxygenNote: 7.1.0
 Suggests: 
-    testthat
+    testthat,
+    covr
