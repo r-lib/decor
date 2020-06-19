@@ -1,39 +1,48 @@
-test_that("cpp_files works", {
-  expect_equal(cpp_files(character()), character())
+describe("cpp_files", {
+  it("returns an empty character if there are no C++ files", {
+    expect_equal(cpp_files(character()), character())
 
-  expect_equal(cpp_files(""), character())
+    expect_equal(cpp_files(""), character())
 
-  d <- tempfile()
-  on.exit(unlink(d, recursive = TRUE))
+    d <- tempfile()
+    on.exit(unlink(d, recursive = TRUE))
 
-  expect_equal(cpp_files(d), character())
+    expect_equal(cpp_files(d), character())
 
-  dir.create(d)
-  expect_equal(cpp_files(d), character())
+    dir.create(d)
+    expect_equal(cpp_files(d), character())
 
-  dir.create(file.path(d, "src"))
-  expect_equal(cpp_files(d), character())
+    dir.create(file.path(d, "src"))
+    expect_equal(cpp_files(d), character())
 
-  file.create(file.path(d, "src", "foo"))
-  expect_equal(cpp_files(d), character())
+    file.create(file.path(d, "src", "foo"))
+    expect_equal(cpp_files(d), character())
 
-  file.create(file.path(d, "src", "foo.c"))
-  expect_equal(cpp_files(d), character())
+    file.create(file.path(d, "src", "foo.c"))
+    expect_equal(cpp_files(d), character())
 
-  file.create(file.path(d, "src", "foo"))
-  expect_equal(cpp_files(d), character())
+    file.create(file.path(d, "src", "foo"))
+    expect_equal(cpp_files(d), character())
+  })
 
-  file.create(file.path(d, "src", "foo.cc"))
-  expect_equal(basename(cpp_files(d)), "foo.cc")
+  it("returns the C++ files if they exist", {
+    d <- tempfile()
+    on.exit(unlink(d, recursive = TRUE))
+    dir.create(d)
+    dir.create(file.path(d, "src"))
 
-  file.create(file.path(d, "src", "foo.cpp"))
-  expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp"))
+    file.create(file.path(d, "src", "foo.cc"))
+    expect_equal(basename(cpp_files(d)), "foo.cc")
 
-  file.create(file.path(d, "src", "foo.h"))
-  expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp", "foo.h"))
+    file.create(file.path(d, "src", "foo.cpp"))
+    expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp"))
 
-  file.create(file.path(d, "src", "foo.hpp"))
-  expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp", "foo.h", "foo.hpp"))
+    file.create(file.path(d, "src", "foo.h"))
+    expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp", "foo.h"))
+
+    file.create(file.path(d, "src", "foo.hpp"))
+    expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp", "foo.h", "foo.hpp"))
+  })
 })
 
 test_that("cpp_decorations_work", {
