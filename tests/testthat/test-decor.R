@@ -363,6 +363,21 @@ describe("parse_cpp_function", {
         )
       )
     )
+
+    expect_equal(
+      parse_cpp_function(c("foo::bar foo(std::vector<int>& bar, int baz = foo2())", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "foo::bar",
+        args = list(
+          tibble(
+            type = c("std::vector<int>&", "int"),
+            name = c("bar", "baz"),
+            default = c(NA_character_, 'foo2()')
+          )
+        )
+      )
+    )
   })
 
   it("works with declarations", {
