@@ -348,6 +348,23 @@ describe("parse_cpp_function", {
     )
   })
 
+  it("works with complex arguments", {
+    expect_equal(
+      parse_cpp_function(c("foo::bar foo(const char[] bar, const std::string& baz = \"hi\")", "{", "}")),
+      tibble(
+        name = "foo",
+        return_type = "foo::bar",
+        args = list(
+          tibble(
+            type = c("const char[]", "const std::string&"),
+            name = c("bar", "baz"),
+            default = c(NA_character_, '"hi"')
+          )
+        )
+      )
+    )
+  })
+
   it("works with declarations", {
     expect_equal(
       parse_cpp_function(c("double foo(int bar = 1, const char* baz = \"hi\");")),
