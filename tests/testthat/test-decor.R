@@ -107,6 +107,32 @@ describe("cpp_decorations", {
     )
   })
 
+  it("works with multiple commented decorations in multiple files without parameters", {
+    test_cpp_decorations(
+      c(
+        "// [[pkg::export]]\nvoid foo() { }\n// [[pkg::export]]\nvoid bar() { }",
+        "// [[pkg::export]]\nvoid foo2() { }\n// [[pkg::export]]\nvoid bar2() { }"
+      ),
+      tibble(
+        file = c(
+          NA_character_,
+          NA_character_,
+          NA_character_,
+          NA_character_
+        ),
+        line = c(1L, 3L, 1L, 3L),
+        decoration = c("pkg::export", "pkg::export", "pkg::export", "pkg::export"),
+        params = list("pkg::export", "pkg::export", "pkg::export", "pkg::export"),
+        context = list(
+          c("// [[pkg::export]]", "void foo() { }"),
+          c("// [[pkg::export]]", "void bar() { }"),
+          c("// [[pkg::export]]", "void foo2() { }"),
+          c("// [[pkg::export]]", "void bar2() { }")
+        )
+      )
+    )
+  })
+
   it("works with single commented decorations with parameters", {
     test_cpp_decorations(
       "// [[pkg::include(Bar)]]\nvoid foo() { }",
