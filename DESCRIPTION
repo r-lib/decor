@@ -1,5 +1,5 @@
 Package: decor
-Title: Code Decoration
+Title: Retrieve Code Decorations
 Version: 0.0.0.9001
 Authors@R: 
     c(person(given = "Romain",
@@ -10,7 +10,9 @@ Authors@R:
              family = "Hester",
              role = c("aut", "cre"),
              email = "jim.hester@rstudio.com"))
-Description: Package interior decorator.
+Description: Retrieves code comment decorations for C++
+    languages of the form '\\ [[xyz]]', which are used for automated
+    wrapping of C++ functions.
 License: MIT + file LICENSE
 Depends: 
     R (>= 3.3.0)
