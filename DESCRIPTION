@@ -9,7 +9,9 @@ Authors@R:
       person(given = "Jim",
              family = "Hester",
              role = c("aut", "cre"),
-             email = "jim.hester@rstudio.com"))
+             email = "jim.hester@rstudio.com"),
+      person(given = "RStudio",
+             role = c("cph", "fnd")))
 Description: Retrieves code comment decorations for C++
     languages of the form '\\ [[xyz]]', which are used for automated
     wrapping of C++ functions.
