@@ -2,6 +2,7 @@
 
 export(cpp_decorations)
 export(cpp_files)
+export(parse_cpp_function)
 importFrom(tibble,tibble)
 importFrom(utils,head)
 importFrom(utils,tail)

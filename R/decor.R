@@ -72,6 +72,20 @@ cpp_attribute_pattern <- function(is_attribute) {
   )
 }
 
+#' Parse a C++ function
+#'
+#' Parses a C++ function returning a tibble with the function name and return
+#' type and a list column with the arguments of the function.
+#' @inheritParams cpp_decorations
+#' @param context The function context, as obtained by the `context` column from [cpp_decorations()]
+#' @return A tibble with the following fields:
+#' - name - The name of the function
+#' - return_type - The return type of the function
+#' - args - A list column containing a tibble of the functions arguments
+#'   - type - The type of the argument
+#'   - name - The name of the argument
+#'   - default - The default value of the argument (if any).
+#' @export
 parse_cpp_function <- function(context, is_attribute = FALSE) {
   if (length(context) == 0 || !nzchar(context[[1L]])) {
     return(
