@@ -1,20 +1,30 @@
 Package: decor
-Title: Code decoration
+Title: Retrieve Code Decorations
 Version: 0.0.0.9001
-Authors@R: c(
-      person("Romain", "François", email = "romain@purrple.cat", role = c("aut", "cre"))
-    )
-Description: Package interior decorator.
-Depends: R (>= 3.5.0)
+Authors@R: 
+    c(person(given = "Romain",
+             family = "François",
+             role = "aut",
+             email = "romain@purrple.cat"),
+      person(given = "Jim",
+             family = "Hester",
+             role = c("aut", "cre"),
+             email = "jim.hester@rstudio.com"),
+      person(given = "RStudio",
+             role = c("cph", "fnd")))
+Description: Retrieves code comment decorations for C++
+    languages of the form '\\ [[xyz]]', which are used for automated
+    wrapping of C++ functions.
 License: MIT + file LICENSE
+Depends: 
+    R (>= 3.3.0)
+Imports: 
+    tibble,
+    utils,
+    vctrs
+Suggests: 
+    covr,
+    testthat
 Encoding: UTF-8
 LazyData: true
-Imports:
-    fs,
-    readr,
-    stringr,
-    purrr,
-    tibble,
-    rlang,
-    utils
-RoxygenNote: 6.1.99.9001
+RoxygenNote: 7.1.0.9000

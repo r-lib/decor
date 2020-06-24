@@ -1,3 +1,6 @@
 ^LICENSE\.md$
 ^decor\.Rproj$
 ^\.Rproj\.user$
+^codecov\.yml$
+^\.github$
+^\.clang-format$

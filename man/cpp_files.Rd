@@ -7,7 +7,10 @@
 cpp_files(pkg = ".")
 }
 \arguments{
-\item{pkg}{See `devtools::as.package()`}
+\item{pkg}{The path to a package's root directory.}
+}
+\value{
+A character vector of C++ files found in the package.
 }
 \description{
 C++ files from a package
