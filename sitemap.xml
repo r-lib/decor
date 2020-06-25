@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://decor.r-lib.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://decor.r-lib.org/reference/cpp_decorations.html</loc>
+  </url>
+  <url>
+    <loc>https://decor.r-lib.org/reference/cpp_files.html</loc>
+  </url>
+  <url>
+    <loc>https://decor.r-lib.org/reference/parse_cpp_function.html</loc>
+  </url>
+</urlset>
