@@ -4,3 +4,4 @@
 ^codecov\.yml$
 ^\.github$
 ^\.clang-format$
+^_pkgdown.yml$
