@@ -73,7 +73,7 @@ type and a list column with the arguments of the function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">decor</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -88,9 +88,17 @@ type and a list column with the arguments of the function." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/r-lib/decor/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,7 +113,7 @@ type and a list column with the arguments of the function." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Parse a C++ function</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/decor/blob/master/R/decor.R'><code>R/decor.R</code></a></small>
     <div class="hidden name"><code>parse_cpp_function.Rd</code></div>
     </div>
 
@@ -139,6 +147,15 @@ type and a list column with the arguments of the function.</p>
   - name - The name of the argument
   - default - The default value of the argument (if any).</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># Setup</span>
+<span class='kw'>context</span> <span class='op'>&lt;-</span> <span class='st'>"int fun(int x) { return x + 1; }"</span>
+
+<span class='co'># Parse the function</span>
+<span class='fu'>parse_cpp_function</span>(<span class='kw'>context</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 3</span><span>
+#&gt;   name  return_type args            
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt; </span><span style='color: #555555;'>1</span><span> fun   int         </span><span style='color: #555555;'>&lt;tibble [1 × 3]&gt;</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
