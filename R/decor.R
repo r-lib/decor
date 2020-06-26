@@ -4,6 +4,18 @@
 #'
 #' @return A character vector of C++ files found in the package.
 #' @export
+#' @examples
+#' # Setup
+#' pkg <- tempfile()
+#' dir.create(file.path(pkg, "src"), recursive = TRUE)
+#' file.create(file.path(pkg, "src", "code.c"))
+#' file.create(file.path(pkg, "src", "code.cpp"))
+#'
+#' # List the files, only the C++ file will be listed
+#' cpp_files(pkg)
+#'
+#' # Cleanup
+#' unlink(pkg, recursive = TRUE)
 cpp_files <- function(pkg = ".") {
   if (length(pkg) == 0 || !nzchar(pkg[[1L]])) {
     return(character())
@@ -29,6 +41,16 @@ cpp_files <- function(pkg = ".") {
 #' - params - Any parameters given with the decoration
 #' - context - The text of the decoration line and all lines until the next decoration (or the end of the file).
 #' @export
+#' @examples
+#' # Setup
+#' f <- tempfile()
+#' writeLines("[[cpp11::register]] int fun(int x = 1) { return x + 1; }", f)
+#'
+#' # Retrieve the decorations in the file
+#' cpp_decorations(files = f, is_attribute = TRUE)
+#'
+#' # Cleanup
+#' unlink(f)
 cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE) {
 
   res <- lapply(files, function(file) {
@@ -86,6 +108,12 @@ cpp_attribute_pattern <- function(is_attribute) {
 #'   - name - The name of the argument
 #'   - default - The default value of the argument (if any).
 #' @export
+#' @examples
+#' # Setup
+#' context <- "int fun(int x) { return x + 1; }"
+#'
+#' # Parse the function
+#' parse_cpp_function(context)
 parse_cpp_function <- function(context, is_attribute = FALSE) {
   if (length(context) == 0 || !nzchar(context[[1L]])) {
     return(

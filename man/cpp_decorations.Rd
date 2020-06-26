@@ -24,3 +24,14 @@ A tibble with the decorations found, containing fields:
 \description{
 Decorations in a C++ file
 }
+\examples{
+# Setup
+f <- tempfile()
+writeLines("[[cpp11::register]] int fun(int x = 1) { return x + 1; }", f)
+
+# Retrieve the decorations in the file
+cpp_decorations(files = f, is_attribute = TRUE)
+
+# Cleanup
+unlink(f)
+}

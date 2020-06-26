@@ -15,3 +15,16 @@ A character vector of C++ files found in the package.
 \description{
 C++ files from a package
 }
+\examples{
+# Setup
+pkg <- tempfile()
+dir.create(file.path(pkg, "src"), recursive = TRUE)
+file.create(file.path(pkg, "src", "code.c"))
+file.create(file.path(pkg, "src", "code.cpp"))
+
+# List the files, only the C++ file will be listed
+cpp_files(pkg)
+
+# Cleanup
+unlink(pkg, recursive = TRUE)
+}

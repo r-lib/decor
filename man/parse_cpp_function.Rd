@@ -24,3 +24,10 @@ A tibble with the following fields:
 Parses a C++ function returning a tibble with the function name and return
 type and a list column with the arguments of the function.
 }
+\examples{
+# Setup
+context <- "int fun(int x) { return x + 1; }"
+
+# Parse the function
+parse_cpp_function(context)
+}
