@@ -474,4 +474,23 @@ describe("parse_cpp_function", {
       )
     )
   })
+
+  describe("read_lines()", {
+    it("works with empty files", {
+      expect_equal(read_lines(content = character()), character())
+    })
+    it("returns the content if there are no comments", {
+      expect_equal(read_lines(content = "'x' \"y\"\n z ** 2 / 1"), c("'x' \"y\"", " z ** 2 / 1"))
+    })
+    it("returns the content with blanked comments for single line comments", {
+      expect_equal(read_lines(content = "foo\n// bar\nbaz"), c("foo", "      ", "baz"))
+    })
+    it("returns the content with blanked comments for multi-line comments", {
+      expect_equal(read_lines(content = "/* foo\n//' */bar\nbaz"), c("      ", "      bar", "baz"))
+    })
+
+    it("quoted comments are ignored", {
+      expect_equal(read_lines(content = '"/*" foo\n\'// */\'bar\nbaz'), c('"/*" foo', "\'// */\'bar", "baz"))
+    })
+  })
 })

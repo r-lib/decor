@@ -57,7 +57,11 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
     if (!file.exists(file)) {
       return(tibble(file = character(), line = integer(), decoration = character(), params = list(), context = list()))
     }
-    lines <- readLines(file)
+    if (is_attribute) {
+      lines <- read_lines(file)
+    } else {
+      lines <- readLines(file)
+    }
 
     start <- grep(cpp_attribute_pattern(is_attribute), lines)
     if (!length(start)) {
@@ -81,6 +85,15 @@ cpp_decorations <- function(pkg = ".", files = cpp_files(pkg = pkg), is_attribut
   })
 
   vctrs::vec_rbind(!!!res);
+}
+
+read_lines <- function(file, content = readChar(file, file.size(file))) {
+  if (length(content) == 0) {
+    return(character())
+  }
+  without_comments <- .Call(blank_comments, content)
+
+  strsplit(without_comments, "\r?\n")[[1]]
 }
 
 cpp_attribute_pattern <- function(is_attribute) {
