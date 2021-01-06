@@ -5,3 +5,4 @@
 ^\.github$
 ^\.clang-format$
 ^_pkgdown.yml$
+^CRAN-RELEASE$

@@ -5,7 +5,7 @@
 [![Codecov test coverage](https://codecov.io/gh/jimhester/decor/branch/master/graph/badge.svg)](https://codecov.io/gh/jimhester/decor?branch=master)
 <!-- badges: end -->
 
-decor retrieves code comment decorations for C++ languages of the form '\\ [[xyz]]', which are used for automated wrapping of C++ functions.
+decor retrieves code comment decorations for C++ languages of the form `\\ [[xyz]]`, which are used for automated wrapping of C++ functions.
 
 ## Installation
 
