@@ -5,7 +5,6 @@
 
 /* blanks all C and C++ style comments in a file, preserving newlines */
 std::string blank_comments(std::string data) {
-  size_t i = 0;
   enum state_t {
     NORMAL,
     SINGLE_LINE_COMMENT,
@@ -24,8 +23,8 @@ std::string blank_comments(std::string data) {
 
   state_t state = NORMAL;
 
-  size_t len = data.size();
-  for (int i = 0; i < len; ++i) {
+  const size_t len = data.size();
+  for (size_t i = 0; i < len; ++i) {
     switch (state) {
       case NORMAL:
         switch (data[i]) {
@@ -89,7 +88,7 @@ std::string blank_comments(std::string data) {
 }
 
 extern "C" SEXP r_blank_comments(SEXP data_) {
-  std::string data = blank_comments(CHAR(STRING_ELT(data_, 0)));
+  const std::string data = blank_comments(CHAR(STRING_ELT(data_, 0)));
 
   SEXP out = PROTECT(Rf_allocVector(STRSXP, 1));
   SET_STRING_ELT(out, 0, Rf_mkCharLenCE(data.data(), data.size(), CE_UTF8));
