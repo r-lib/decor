@@ -1,4 +1,4 @@
-# decor (development version)
+# decor 1.0.1
 
 * Romain François is now the maintainer.
 
