@@ -4,12 +4,11 @@ Version: 1.0.0.9000
 Authors@R: 
     c(person(given = "Romain",
              family = "François",
-             role = "aut",
+             role = c("aut", "cre"),
              email = "romain@rstudio.com"),
       person(given = "Jim",
              family = "Hester",
-             role = c("aut", "cre"),
-             email = "jim.hester@rstudio.com"),
+             role = "aut"),
       person(given = "RStudio",
              role = c("cph", "fnd")))
 Description: Retrieves code comment decorations for C++
