@@ -1,6 +1,6 @@
 Package: decor
 Title: Retrieve Code Decorations
-Version: 1.0.1
+Version: 1.0.1.9000
 Authors@R: 
     c(person(given = "Romain",
              family = "François",
