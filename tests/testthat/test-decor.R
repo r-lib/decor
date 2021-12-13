@@ -224,6 +224,20 @@ describe("cpp_decorations", {
         context = list("[[pkg::export]] void foo() { }")
       )
     )
+  })
+
+  it("works with non-commented decorations", {
+    test_cpp_decorations(is_attribute = TRUE,
+      "[[pkg::export]] void foo () { }",
+      tibble(
+        file = NA_character_,
+        line = 1L,
+        decoration = "pkg::export",
+        params = list("pkg::export"),
+        context = list("[[pkg::export]] void foo () { }")
+      )
+    )
+  })
 
   it("works with multiple non-commented decorations with named parameters", {
     test_cpp_decorations(is_attribute = TRUE,
@@ -242,7 +256,6 @@ describe("cpp_decorations", {
         )
       )
     )
-  })
 
     test_cpp_decorations(is_attribute = TRUE,
       "[[pkg::include(foo = 'Bar')]] void foo() { }",
