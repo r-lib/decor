@@ -2,7 +2,9 @@
 #'
 #' @param pkg The path to a package's root directory.
 #'
-#' @return A character vector of C++ files found in the package.
+#' @return A character vector of C++ files found in the package, ordered
+#'   according to the C locale, for stability across different sessions and
+#'   platforms.
 #' @export
 #' @examples
 #' # Setup
