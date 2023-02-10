@@ -22,11 +22,15 @@ cpp_files <- function(pkg = ".") {
   }
 
   src <- file.path(pkg, "src")
-  if (dir.exists(src)) {
-    return(list.files(src, full.names = TRUE, pattern = "[.](cc|cpp|h|hpp)$"))
+  if (!dir.exists(src)) {
+    return(character())
   }
 
-  return(character())
+  out <- list.files(src, full.names = TRUE, pattern = "[.](cc|cpp|h|hpp)$")
+  # always sort these paths according to the C locale to avoid nuisance changes
+  # in files generated downstream
+  # TODO: switch to vctrs::vec_sort_radix() or vctrs::vec_sort() when possible
+  out[order(vctrs::vec_rank(out))]
 }
 
 #' Decorations in a C++ file
