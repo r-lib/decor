@@ -43,6 +43,17 @@ describe("cpp_files", {
     file.create(file.path(d, "src", "foo.hpp"))
     expect_equal(basename(cpp_files(d)), c("foo.cc", "foo.cpp", "foo.h", "foo.hpp"))
   })
+
+  it("returns the files ordered in the C locale", {
+    d <- tempfile()
+    on.exit(unlink(d, recursive = TRUE))
+    dir.create(d)
+    dir.create(file.path(d, "src"))
+
+    nms <- c("B.cc", "a.cc", "c.cc", "D.cc")
+    file.create(file.path(d, "src", nms))
+    expect_equal(basename(cpp_files(d)), c("B.cc", "D.cc", "a.cc", "c.cc"))
+  })
 })
 
 describe("cpp_decorations", {
