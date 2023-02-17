@@ -10,7 +10,9 @@ cpp_files(pkg = ".")
 \item{pkg}{The path to a package's root directory.}
 }
 \value{
-A character vector of C++ files found in the package.
+A character vector of C++ files found in the package, ordered
+  according to the C locale, for stability across different sessions and
+  platforms.
 }
 \description{
 C++ files from a package
