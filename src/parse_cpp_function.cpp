@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include <R.h>
 #include <Rinternals.h>
 
@@ -115,6 +117,15 @@ SEXP parse_arguments(const std::string& args) {
     // where does the type end
     end = arg.find_last_of(kWhiteDeRefChars);
 
+    if (end == std::string::npos) {
+      UNPROTECT(3);
+
+      std::stringstream stream;
+      stream << "Argument " << (i + 1) << " (" << arg << ") has no type";
+
+      return Rf_mkString(stream.str().c_str());
+    }
+
     // name
     SET_STRING_ELT(name, i, Rf_mkCharLen(arg.data() + end + 1, arg.size() - end - 1));
 
@@ -138,6 +149,7 @@ SEXP parse_arguments(const std::string& args) {
   SET_VECTOR_ELT(tbl_args, 2, def);
   SET_STRING_ELT(names, 2, Rf_mkChar("default"));
   Rf_namesgets(tbl_args, names);
+
   set_tibble(tbl_args);
 
   set_rownames(tbl_args, n);
@@ -172,7 +184,12 @@ extern "C" SEXP parse_cpp_function(SEXP signature_) {
   SET_STRING_ELT(names, 1, Rf_mkChar("return_type"));
 
   SEXP args_lst = PROTECT(Rf_allocVector(VECSXP, 1));
-  SET_VECTOR_ELT(args_lst, 0, parse_arguments(args));
+  SEXP args_parsed = PROTECT(parse_arguments(args));
+  if (TYPEOF(args_parsed) == STRSXP) {
+    UNPROTECT(4);
+    return args_parsed;
+  }
+  SET_VECTOR_ELT(args_lst, 0, args_parsed);
 
   SET_VECTOR_ELT(res, 2, args_lst);
   SET_STRING_ELT(names, 2, Rf_mkChar("args"));
@@ -180,6 +197,6 @@ extern "C" SEXP parse_cpp_function(SEXP signature_) {
   set_rownames(res, 1);
   set_tibble(res);
   Rf_setAttrib(res, R_NamesSymbol, names);
-  UNPROTECT(3);
+  UNPROTECT(4);
   return res;
 }
