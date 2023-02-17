@@ -5,6 +5,7 @@
 #include <vector>
 
 static const char* const kWhitespaceChars = " \f\n\r\t\v";
+static const char* const kWhiteDeRefChars = " \f\n\r\t\v*&";
 
 void set_rownames(SEXP x, int n) {
   SEXP rownames = PROTECT(Rf_allocVector(INTSXP, 2));
@@ -112,13 +113,17 @@ SEXP parse_arguments(const std::string& args) {
     }
 
     // where does the type end
-    end = arg.find_last_of(kWhitespaceChars);
+    end = arg.find_last_of(kWhiteDeRefChars);
 
     // name
     SET_STRING_ELT(name, i, Rf_mkCharLen(arg.data() + end + 1, arg.size() - end - 1));
 
     // type
-    SET_STRING_ELT(type, i, Rf_mkCharLen(arg.data(), end));
+    if (end == arg.find_last_of(kWhitespaceChars)) {
+      SET_STRING_ELT(type, i, Rf_mkCharLen(arg.data(), end));
+    } else {
+      SET_STRING_ELT(type, i, Rf_mkCharLen(arg.data(), end + 1));
+    }
   }
 
   SEXP tbl_args = PROTECT(Rf_allocVector(VECSXP, 3));
