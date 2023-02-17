@@ -160,8 +160,11 @@ parse_cpp_function <- function(context, is_attribute = FALSE) {
 
   first_brace_or_statement <- grep("[{;]", context)[[1L]]
 
+  # remove // comments from context
+  context <- sub("//.*", "", context[seq(1L, first_brace_or_statement)])
+
   # If not a first brace assume it is just a declaration.
-  signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq(1L, first_brace_or_statement)], collapse = " "))
+  signature <- sub("[[:space:]]*[{].*$", "", paste(context, collapse = " "))
 
   out <- .Call(decor_parse_cpp_function, signature)
 
