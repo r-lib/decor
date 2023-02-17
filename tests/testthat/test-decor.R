@@ -432,6 +432,11 @@ describe("parse_cpp_function", {
       )
     )
 
+    expect_error(
+      parse_cpp_function("raws C_encode(int x, strings) { }"),
+      "has no type"
+    )
+
     expect_equal(
       parse_cpp_function(c("double foo(int bar, const char *baz)", "{", "}")),
       tibble(

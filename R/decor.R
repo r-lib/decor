@@ -163,5 +163,10 @@ parse_cpp_function <- function(context, is_attribute = FALSE) {
   # If not a first brace assume it is just a declaration.
   signature <- sub("[[:space:]]*[{].*$", "", paste(context[seq(1L, first_brace_or_statement)], collapse = " "))
 
-  .Call(decor_parse_cpp_function, signature)
+  out <- .Call(decor_parse_cpp_function, signature)
+
+  if (is.character(out))
+    stop(out)
+
+  out
 }
