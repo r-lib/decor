@@ -5,6 +5,8 @@
 
 * `parse_cpp_function()` supports spaces before the argument list (#4) and handles ref/deref (#6, @nbenn).
 
+* `parse_cpp_function()` strips `//` comments (#8).
+
 # decor 1.0.1
 
 * Romain François is now the maintainer.

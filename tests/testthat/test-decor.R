@@ -386,6 +386,23 @@ describe("parse_cpp_function", {
     )
   })
 
+  it("works with inline // comments for arguments", {
+    expect_equal(
+      parse_cpp_function(c('int foo(int a, // = 5', 'int b) {', 'return 0;', '}')),
+      tibble(
+        name = "foo",
+        return_type = "int",
+        args = list(
+          tibble(
+            type = c("int", "int"),
+            name = c("a", "b"),
+            default = c(NA_character_, NA_character_)
+          )
+        )
+      )
+    )
+  })
+
   it("works with functions taking arguments", {
     expect_equal(
       parse_cpp_function(c("double foo(int bar)", "{", "}")),
