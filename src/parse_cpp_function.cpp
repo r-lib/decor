@@ -1,10 +1,10 @@
 #include <sstream>
 
-#include <R.h>
-#include <Rinternals.h>
-
 #include <string>
 #include <vector>
+
+#include <R.h>
+#include <Rinternals.h>
 
 static const char* const kWhitespaceChars = " \f\n\r\t\v";
 static const char* const kWhiteDeRefChars = " \f\n\r\t\v*&";
