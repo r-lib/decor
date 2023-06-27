@@ -2,15 +2,13 @@ Package: decor
 Title: Retrieve Code Decorations
 Version: 1.0.1.9000
 Authors@R: 
-    c(person(given = "Romain",
-             family = "François",
-             role = c("aut", "cre"),
-             email = "romain@rstudio.com"),
-      person(given = "Jim",
-             family = "Hester",
-             role = "aut"),
-      person(given = "RStudio",
-             role = c("cph", "fnd")))
+    c(
+      person("Davis", "Vaughan", email = "davis@posit.co", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4777-038X")),
+      person("Jennifer", "Bryan", email = "jenny@posit.co", role = "aut", comment = c(ORCID = "0000-0002-6983-2759")),
+      person("Romain", "François", role = "aut", comment = c(ORCID = "0000-0002-2444-4226")),
+      person("Jim","Hester", role = "aut"),
+      person("Posit Software, PBC", role = c("cph", "fnd"))
+    )
 Description: Retrieves code comment decorations for C++
     languages of the form '\\ [[xyz]]', which are used for automated
     wrapping of C++ functions.
