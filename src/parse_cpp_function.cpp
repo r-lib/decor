@@ -88,7 +88,10 @@ SEXP parse_arguments(const std::string& args) {
   SEXP def = PROTECT(Rf_allocVector(STRSXP, n));
   SEXP name = PROTECT(Rf_allocVector(STRSXP, n));
 
-  for (int i = 0; i < n; i++) {
+  bool ok = true;
+  int i = 0;
+
+  for (; i < n; i++) {
     std::string arg = arguments[i];
 
     std::string::size_type start = arg.find_first_not_of(kWhitespaceChars);
@@ -99,9 +102,7 @@ SEXP parse_arguments(const std::string& args) {
 
     if (eqPos != std::string::npos) {
       std::string::size_type default_start = arg.find_first_not_of(kWhitespaceChars, eqPos + 1);
-      SEXP def_i = PROTECT(Rf_mkCharLen(arg.data() + default_start, end - default_start + 1));
-      SET_STRING_ELT(def, i, def_i);
-      UNPROTECT(1);
+      SET_STRING_ELT(def, i, Rf_mkCharLen(arg.data() + default_start, end - default_start + 1));
       arg.erase(eqPos);
     } else {
       SET_STRING_ELT(def, i, NA_STRING);
@@ -118,12 +119,8 @@ SEXP parse_arguments(const std::string& args) {
     end = arg.find_last_of(kWhiteDeRefChars);
 
     if (end == std::string::npos) {
-      std::stringstream stream;
-      stream << "Argument " << (i + 1) << " (" << arg << ") has no type";
-
-      SEXP out = Rf_mkString(stream.str().c_str());
-      UNPROTECT(3); // type, def, name
-      return out;
+      ok = false;
+      break;
     }
 
     // name
@@ -137,25 +134,34 @@ SEXP parse_arguments(const std::string& args) {
     }
   }
 
-  SEXP tbl_args = PROTECT(Rf_allocVector(VECSXP, 3));
-  SEXP names = PROTECT(Rf_allocVector(STRSXP, 3));
+  if (!ok) {
+    std::stringstream stream;
+    stream << "Argument " << (i + 1) << " (" << arguments[i] << ") has no type";
 
-  SET_VECTOR_ELT(tbl_args, 0, type);
-  SET_STRING_ELT(names, 0, Rf_mkChar("type"));
+    SEXP out = Rf_mkString(stream.str().c_str());
+    UNPROTECT(3); // type, def, name
+    return out;
+  } else {
+    SEXP tbl_args = PROTECT(Rf_allocVector(VECSXP, 3));
+    SEXP names = PROTECT(Rf_allocVector(STRSXP, 3));
 
-  SET_VECTOR_ELT(tbl_args, 1, name);
-  SET_STRING_ELT(names, 1, Rf_mkChar("name"));
+    SET_VECTOR_ELT(tbl_args, 0, type);
+    SET_STRING_ELT(names, 0, Rf_mkChar("type"));
 
-  SET_VECTOR_ELT(tbl_args, 2, def);
-  SET_STRING_ELT(names, 2, Rf_mkChar("default"));
-  Rf_namesgets(tbl_args, names);
+    SET_VECTOR_ELT(tbl_args, 1, name);
+    SET_STRING_ELT(names, 1, Rf_mkChar("name"));
 
-  set_tibble(tbl_args);
+    SET_VECTOR_ELT(tbl_args, 2, def);
+    SET_STRING_ELT(names, 2, Rf_mkChar("default"));
+    Rf_namesgets(tbl_args, names);
 
-  set_rownames(tbl_args, n);
+    set_tibble(tbl_args);
 
-  UNPROTECT(5);
-  return tbl_args;
+    set_rownames(tbl_args, n);
+
+    UNPROTECT(5); // type, def, name, tbl_args, names
+    return tbl_args;
+  }
 }
 
 extern "C" SEXP parse_cpp_function(SEXP signature_) {
