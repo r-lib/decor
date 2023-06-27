@@ -98,10 +98,10 @@ SEXP parse_arguments(const std::string& args) {
     std::string::size_type eqPos = arg.find_first_of('=', start);
 
     if (eqPos != std::string::npos) {
-      std::string::size_type default_start =
-          arg.find_first_not_of(kWhitespaceChars, eqPos + 1);
-      SET_STRING_ELT(def, i,
-                     Rf_mkCharLen(arg.data() + default_start, end - default_start + 1));
+      std::string::size_type default_start = arg.find_first_not_of(kWhitespaceChars, eqPos + 1);
+      SEXP def_i = PROTECT(Rf_mkCharLen(arg.data() + default_start, end - default_start + 1));
+      SET_STRING_ELT(def, i, def_i);
+      UNPROTECT(1);
       arg.erase(eqPos);
     } else {
       SET_STRING_ELT(def, i, NA_STRING);
@@ -118,12 +118,12 @@ SEXP parse_arguments(const std::string& args) {
     end = arg.find_last_of(kWhiteDeRefChars);
 
     if (end == std::string::npos) {
-      UNPROTECT(3);
-
       std::stringstream stream;
       stream << "Argument " << (i + 1) << " (" << arg << ") has no type";
 
-      return Rf_mkString(stream.str().c_str());
+      SEXP out = Rf_mkString(stream.str().c_str());
+      UNPROTECT(3); // type, def, name
+      return out;
     }
 
     // name
@@ -177,26 +177,27 @@ extern "C" SEXP parse_cpp_function(SEXP signature_) {
   SEXP res = PROTECT(Rf_allocVector(VECSXP, 3));
   SEXP names = PROTECT(Rf_allocVector(STRSXP, 3));
 
-  SET_VECTOR_ELT(res, 0, Rf_mkString(name.c_str()));
+  SET_VECTOR_ELT(res, 0, PROTECT(Rf_mkString(name.c_str())));
   SET_STRING_ELT(names, 0, Rf_mkChar("name"));
 
-  SET_VECTOR_ELT(res, 1, Rf_mkString(return_type.c_str()));
+  SET_VECTOR_ELT(res, 1, PROTECT(Rf_mkString(return_type.c_str())));
   SET_STRING_ELT(names, 1, Rf_mkChar("return_type"));
 
   SEXP args_lst = PROTECT(Rf_allocVector(VECSXP, 1));
   SEXP args_parsed = PROTECT(parse_arguments(args));
   if (TYPEOF(args_parsed) == STRSXP) {
-    UNPROTECT(4);
+    UNPROTECT(6);
     return args_parsed;
+  } else {
+    SET_VECTOR_ELT(args_lst, 0, args_parsed);
+
+    SET_VECTOR_ELT(res, 2, args_lst);
+    SET_STRING_ELT(names, 2, Rf_mkChar("args"));
+
+    set_rownames(res, 1);
+    set_tibble(res);
+    Rf_setAttrib(res, R_NamesSymbol, names);
+    UNPROTECT(6);
+    return res;
   }
-  SET_VECTOR_ELT(args_lst, 0, args_parsed);
-
-  SET_VECTOR_ELT(res, 2, args_lst);
-  SET_STRING_ELT(names, 2, Rf_mkChar("args"));
-
-  set_rownames(res, 1);
-  set_tibble(res);
-  Rf_setAttrib(res, R_NamesSymbol, names);
-  UNPROTECT(4);
-  return res;
 }
