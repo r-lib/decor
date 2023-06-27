@@ -1,11 +1,10 @@
 #include <sstream>
+#include <string>
+#include <vector>
 
 #define R_NO_REMAP
 #include <R.h>
 #include <Rinternals.h>
-
-#include <string>
-#include <vector>
 
 static const char* const kWhitespaceChars = " \f\n\r\t\v";
 static const char* const kWhiteDeRefChars = " \f\n\r\t\v*&";
