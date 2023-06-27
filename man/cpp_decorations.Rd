@@ -2,14 +2,14 @@
 % Please edit documentation in R/decor.R
 \name{cpp_decorations}
 \alias{cpp_decorations}
-\title{Decorations in a C++ file}
+\title{Decorations in a `C++` file}
 \usage{
 cpp_decorations(pkg = ".", files = cpp_files(pkg = pkg), is_attribute = FALSE)
 }
 \arguments{
 \item{pkg}{The path to a package's root directory.}
 
-\item{files}{Paths to C++ files. If given, `pkg` will not be used.}
+\item{files}{Paths to `C++` files. If given, `pkg` will not be used.}
 
 \item{is_attribute}{If `TRUE` the decorations are C++11 attributes, if `FALSE` they are comments.}
 }
@@ -22,7 +22,7 @@ A tibble with the decorations found, containing fields:
 - context - The text of the decoration line and all lines until the next decoration (or the end of the file).
 }
 \description{
-Decorations in a C++ file
+Decorations in a `C++` file
 }
 \examples{
 # Setup

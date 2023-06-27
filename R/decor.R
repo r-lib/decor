@@ -1,8 +1,8 @@
-#' C++ files from a package
+#' `C++` files from a package
 #'
 #' @param pkg The path to a package's root directory.
 #'
-#' @return A character vector of C++ files found in the package, ordered
+#' @return A character vector of `C++` files found in the package, ordered
 #'   according to the C locale, for stability across different sessions and
 #'   platforms.
 #' @export
@@ -35,10 +35,10 @@ cpp_files <- function(pkg = ".") {
   out[order(vctrs::vec_rank(out))]
 }
 
-#' Decorations in a C++ file
+#' Decorations in a `C++` file
 #'
 #' @inheritParams cpp_files
-#' @param files Paths to C++ files. If given, `pkg` will not be used.
+#' @param files Paths to `C++` files. If given, `pkg` will not be used.
 #' @param is_attribute If `TRUE` the decorations are C++11 attributes, if `FALSE` they are comments.
 #' @return A tibble with the decorations found, containing fields:
 #' - file - The filename for the decoration
