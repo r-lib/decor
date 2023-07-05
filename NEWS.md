@@ -1,3 +1,5 @@
+# decor (development version)
+
 # decor 1.0.2
 
 * Davis Vaughan is now the maintainer. 
